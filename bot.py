@@ -2,9 +2,9 @@ import discord
 from discord.ext import commands
 from discord.utils import get
 import asyncio
-import os
 import banned_messages_txt
-import banned_user_info_txt
+import banned_users_txt
+import users_ban_stats
 
 banned_messages = []
 
@@ -12,12 +12,10 @@ intents = discord.Intents.default()
 intents.members = True
 client1 = commands.Bot(command_prefix='$', intents=intents)
 
-
 @client1.event
 async def on_ready():
   print('We have logged in as {0.user}'.format(client1))
-  await banned_user_info_txt.read_banned_user_info(client1) #po zalogowaniu wykonuje funkcję
-
+  await banned_users_txt.read_banned_user(client1) #po zalogowaniu wykonuje funkcję
 
 @client1.event
 async def on_message(message): #zdarzenie wysłania wiadomosci
@@ -52,7 +50,7 @@ async def on_raw_reaction_add(payload): #licznik emoji
         await message.channel.send(message.author.name + " został zmutowany na 15 minut.")
         banned_messages.append(payload.message_id) #dodanie wiadomości do listy zbanowanych
         banned_messages_txt.write_banned_messages(payload.message_id) #dodanie wiadomości do pliku
-        banned_user_info_txt.write_banned_user_info(roles_list, message.author.id) #dodatnie informacji o zbanowanym uzytkowniku do txt
+        banned_users_txt.write_banned_user(roles_list, message.author.id) #dodatnie informacji o zbanowanym uzytkowniku do txt
         await asyncio.sleep(900)
         await member.remove_roles(Muted) #usunięcie roli muted
         for role in roles_list: #przywracanie roli
@@ -68,6 +66,10 @@ async def on_member_join(member):
   guild = client1.get_guild(470919364951146507)
   Gosc = discord.utils.get(guild.roles, name="Zwykły")
   await member.add_roles(Gosc)
+
+@client1.command()
+async def cards(ctx): #statystyki banow
+  await users_ban_stats.stats(ctx, client1, banned_messages)
       
 banned_messages_txt.read_banned_messages(banned_messages)
 client1.run("ODY3NDg1MTY0NDAwODAzODkw.YPhyhA.Wmey0A7HWGerDNLB7mzgEBOnivE")

@@ -1,8 +1,6 @@
 import discord
 from discord.ext import commands
 from discord.utils import get
-import asyncio
-import os
 
 def read_banned_messages(banned_messages): #odczyt wcze�niej zapisanych id wiadomo�ci
     banned_messages_file = open("banned_messages_list.txt", "r")

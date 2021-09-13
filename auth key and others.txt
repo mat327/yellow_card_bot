@@ -1,0 +1,7 @@
+elo :
+auth key : ODY3NDg1MTY0NDAwODAzODkw.YPhyhA.Wmey0A7HWGerDNLB7mzgEBOnivE
+guild id : 470919364951146507
+
+Among kurwa us :
+auth key : ODIwMDI3MjY3NjgxODc4MTA2.YEvL5w.dj1lCAFZcw-Hayis9K_8DkOLR2o
+guild id : 760217949788831786
