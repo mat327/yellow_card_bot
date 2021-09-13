@@ -31,7 +31,7 @@ async def on_raw_reaction_add(payload): #licznik emoji
     channel = client1.get_channel(payload.channel_id) #zapisanie obiektu channel
     message = await channel.fetch_message(payload.message_id) #zapisanie obiektu message
     reaction = get(message.reactions, emoji=payload.emoji.name) #zapisanie obiektu reakcji wiadomości z danym emoji
-    if reaction and reaction.count > 3: #porówanie ilości reakcji
+    if reaction and reaction.count > 2: #porówanie ilości reakcji
       if payload.message_id in banned_messages:
         await message.channel.send(message.author.name + " otrzymał już karę.")
       else:
