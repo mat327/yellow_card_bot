@@ -6,12 +6,11 @@ import banned_messages_txt
 import banned_users_txt
 import users_ban_stats
 import ban_main
+import bot_config
 
 banned_messages = []
-oauth_token = input("Enter oAuth Token : ")
-guild_id = int(input("Enter Guild ID : "))
-ban_duration = int(input("Enter ban duration in seconds : "))
-min_reaction_amount = int(input("Enter minimum amount of reaction to ban : "))
+server_ban_config = {}
+bot_config.enter_config(server_ban_config) #funkcja do podania konfiguracji serwera i parametrow banow
 
 intents = discord.Intents.default()
 intents.members = True
@@ -21,7 +20,7 @@ client1 = commands.Bot(command_prefix='$', intents=intents)
 async def on_ready():
   print('We have logged in as {0.user}'.format(client1))
   banned_messages_txt.read_banned_messages(banned_messages) #po zalogowaniu wczytuje liste zbanowanych wiadomosci z pliku do pamieci
-  await banned_users_txt.read_banned_user(client1, guild_id) #po zalogowaniu przywraca role zbanowanym użytkownikom 
+  await banned_users_txt.read_banned_user(client1, server_ban_config["guild_id"]) #po zalogowaniu przywraca role zbanowanym użytkownikom 
   users_ban_stats.load_stats_from_file() #po zalogowaniu laduje statystyki banow z pliku
 
 @client1.event
@@ -32,7 +31,7 @@ async def on_message(message): #zdarzenie wysłania wiadomosci
 
 @client1.event
 async def on_raw_reaction_add(payload): #w momencie dodania reakcji
-  await ban_main.ban_function(payload, client1, banned_messages, ban_duration, min_reaction_amount) #glowna funkcja odpowiedzialna za bany
+  await ban_main.ban_function(payload, client1, banned_messages, server_ban_config["ban_duration"], server_ban_config["min_reaction_amount"]) #glowna funkcja odpowiedzialna za bany
 
 @client1.event
 async def on_member_join(member): #nadanie roli nowemu użytkownikowi
@@ -44,4 +43,4 @@ async def on_member_join(member): #nadanie roli nowemu użytkownikowi
 async def cards(ctx): #statystyki banow
   await users_ban_stats.display_stats(ctx, client1)
       
-client1.run(oauth_token)
+client1.run(server_ban_config["oauth_token"])
