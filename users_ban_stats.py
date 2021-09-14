@@ -5,12 +5,14 @@ import asyncio
 import json
 import os
 
+#zapisując do dict w pamięci zmnienne mają typ int ale w przypadku zapisu do pliku id ma typ str,
+#dlatego została zastosowana zmiana typu na str dla user_id
 stats = {}
 
 async def display_stats(ctx, client1):
     await ctx.send("Users Ban Statistic:")
     for user_id, cards in stats.items():
-        user = client1.get_user(user_id)
+        user = client1.get_user(int(user_id))
         time =  cards * 15
         await ctx.send(user.display_name + " - " + str(cards) + "   |   " + str(time) + " minutes")
 
@@ -32,18 +34,20 @@ def load_stats_from_file():
     else:
         print("Opening ban_stats.json ...")
         stats_file = open("ban_stats.json", "r")
-        stats = stats_file.read()
+        global stats
+        stats_str = stats_file.read() #odczyt z pliku jako str
+        stats = json.loads(stats_str) #zmiana typu z str na dict
         print(stats)
         stats_file.close()
         print("Data loaded to server memory, file closed.")
 
 def update_stats(user_id):
     print("Updating users ban stats ...")
-    if user_id in stats:
+    if str(user_id) in stats:
         print("User id already exist in database, updating stats ...")
-        stats[user_id] += stats[user_id]
+        stats[str(user_id)] += stats[str(user_id)]
     else :
         print("User id is not exist in database, added new record ...")
-        stats[user_id] = 1
+        stats[str(user_id)] = 1
     print("Updating users ban stats file ...")
     writte_stats_to_file()
