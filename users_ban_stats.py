@@ -48,7 +48,7 @@ def update_stats(user_id):
     print("Updating users ban stats ...")
     if str(user_id) in stats:
         print("User id already exist in database, updating stats ...")
-        stats[str(user_id)] += stats[str(user_id)]
+        stats[str(user_id)] += 1
     else :
         print("User id is not exist in database, added new record ...")
         stats[str(user_id)] = 1

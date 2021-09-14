@@ -21,7 +21,7 @@ def write_banned_user(role_list, user_id):
         print("File closed, user info saved")
         banned_users_file.close()
 
-async def read_banned_user(client1): #odczyt pliku z info zbanowanych uzytkownikow
+async def read_banned_user(client1, guild_id): #odczyt pliku z info zbanowanych uzytkownikow
     print("Checking banned_users file ...")
     filesize = os.path.getsize("banned_users.txt") #rozmiar pliku txt
     if filesize == 0: #jezeli plik jest pusty funkcja nic nie robi
@@ -30,7 +30,7 @@ async def read_banned_user(client1): #odczyt pliku z info zbanowanych uzytkownik
         print("Restoring roles to users ...")
         banned_users_file = open("banned_users.txt", "r") #otwarcie pliku
         try:
-            guild = client1.get_guild(470919364951146507) #zapis obiektu gildii
+            guild = client1.get_guild(guild_id) #zapis obiektu gildii
             for line in banned_users_file.readlines():
                 strip_line = line.rstrip('\n') #usuniecie \n ze stringa
                 if strip_line.isdigit() : #jezeli linijka txt jest liczba
