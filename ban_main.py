@@ -14,7 +14,7 @@ async def ban_function(payload, client1, banned_messages):
         channel = client1.get_channel(payload.channel_id) #zapisanie obiektu channel
         message = await channel.fetch_message(payload.message_id) #zapisanie obiektu message
         reaction = get(message.reactions, emoji=payload.emoji.name) #zapisanie obiektu reakcji wiadomości z danym emoji
-        if reaction and reaction.count > 0: #porówanie ilości reakcji
+        if reaction and reaction.count > 2: #porówanie ilości reakcji
             if payload.message_id in banned_messages:
                 await message.channel.send(message.author.name + " otrzymał już karę.")
             else:
@@ -37,7 +37,7 @@ async def ban_function(payload, client1, banned_messages):
                 banned_messages_txt.write_banned_messages(payload.message_id) #dodanie wiadomości do pliku
                 banned_users_txt.write_banned_user(roles_list, message.author.id) #dodatnie informacji o zbanowanym uzytkowniku do txt
                 users_ban_stats.update_stats(message.author.id) #zaktualizowanie statystyk banow
-                await asyncio.sleep(20)
+                await asyncio.sleep(900)
                 await member.remove_roles(Muted) #usunięcie roli muted
                 for role in roles_list: #przywracanie roli
                     if role.name != "@everyone":

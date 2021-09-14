@@ -32,7 +32,7 @@ async def on_raw_reaction_add(payload): #w momencie dodania reakcji
 
 @client1.event
 async def on_member_join(member): #nadanie roli nowemu użytkownikowi
-  guild = client1.get_guild(760217949788831786)
+  guild = client1.get_guild(470919364951146507)
   Gosc = discord.utils.get(guild.roles, name="Zwykły")
   await member.add_roles(Gosc)
 
@@ -40,4 +40,4 @@ async def on_member_join(member): #nadanie roli nowemu użytkownikowi
 async def cards(ctx): #statystyki banow
   await users_ban_stats.display_stats(ctx, client1)
       
-client1.run("ODIwMDI3MjY3NjgxODc4MTA2.YEvL5w.dj1lCAFZcw-Hayis9K_8DkOLR2o")
+client1.run("ODY3NDg1MTY0NDAwODAzODkw.YPhyhA.Wmey0A7HWGerDNLB7mzgEBOnivE")

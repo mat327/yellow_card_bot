@@ -30,7 +30,7 @@ async def read_banned_user(client1): #odczyt pliku z info zbanowanych uzytkownik
         print("Restoring roles to users ...")
         banned_users_file = open("banned_users.txt", "r") #otwarcie pliku
         try:
-            guild = client1.get_guild(760217949788831786) #zapis obiektu gildii
+            guild = client1.get_guild(470919364951146507) #zapis obiektu gildii
             for line in banned_users_file.readlines():
                 strip_line = line.rstrip('\n') #usuniecie \n ze stringa
                 if strip_line.isdigit() : #jezeli linijka txt jest liczba
