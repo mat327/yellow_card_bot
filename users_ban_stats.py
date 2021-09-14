@@ -1,3 +1,6 @@
+#Zaimplementowane funkcje do odczytu i zapisu statystyk banow uzytkownikow w pliku json. 
+#Zaimplementowana funkcja wypisania statystyk banow uzytkownikow na kanle tekstowym.
+
 import discord
 from discord.ext import commands
 from discord.utils import get
@@ -29,7 +32,7 @@ def writte_stats_to_file():
 def load_stats_from_file():
     print("Checking ban_stats file ...")
     filesize = os.path.getsize("ban_stats.json") #rozmiar pliku txt
-    if filesize == 0: #je�eli plik jest pusty funkcja nic nie robi
+    if filesize == 0: #jezeli plik jest pusty funkcja nic nie robi
         print("The file is empty")
     else:
         print("Opening ban_stats.json ...")

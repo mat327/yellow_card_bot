@@ -1,8 +1,11 @@
+#Zaimplementowane funkcje do odczytu i zapisu listy zbanowanych wiadomosci uzytkownikow w pliku txt.
+#Zapobiega utracie danych po restarcie serwera 
+
 import discord
 from discord.ext import commands
 from discord.utils import get
 
-def read_banned_messages(banned_messages): #odczyt wcze�niej zapisanych id wiadomo�ci
+def read_banned_messages(banned_messages): #odczyt wczesniej zapisanych id wiadomosci
     banned_messages_file = open("banned_messages_list.txt", "r")
     print("Copying ids message from file to list ...")
     try:

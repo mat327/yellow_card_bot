@@ -1,0 +1,48 @@
+#Glowna funkcja odpowiedzialna za banowanie. Wywolywana jest w momencie dodania reakcji do wiadomosci na kanale.
+#Wykorzystuje users_ban_stats.py, banned_users.py i banned_messages_txt.py
+
+import discord
+from discord.ext import commands
+from discord.utils import get
+import asyncio
+import banned_messages_txt
+import banned_users_txt
+import users_ban_stats
+
+async def ban_function(payload, client1, banned_messages):
+    if payload.emoji.name == '\U0001F7E8': #porównanie emoji
+        channel = client1.get_channel(payload.channel_id) #zapisanie obiektu channel
+        message = await channel.fetch_message(payload.message_id) #zapisanie obiektu message
+        reaction = get(message.reactions, emoji=payload.emoji.name) #zapisanie obiektu reakcji wiadomości z danym emoji
+        if reaction and reaction.count > 0: #porówanie ilości reakcji
+            if payload.message_id in banned_messages:
+                await message.channel.send(message.author.name + " otrzymał już karę.")
+            else:
+                await message.channel.send(message.author.name + " otrzymał trzy żółte kartki.")
+                guild = message.guild
+                Muted = discord.utils.get(guild.roles, name="Muted")
+                if not Muted: #tworzenie roli muted
+                    Muted = await guild.create_role(name="Muted")
+                    for channel in guild.channels:
+                        await channel.set_permissions(Muted, speak=True, send_messages=False, read_message_history=True, read_messages=False)
+                member = await guild.fetch_member(message.author.id) #zapisanie obiektu użytkownika
+                roles_list = member.roles #lista roli zmutowanego użytkownika
+                for role in roles_list: #usuwanie dotychczasowych roli
+                    if role.name != "@everyone":
+                        role1 = discord.utils.get(guild.roles, name=role.name)
+                        await member.remove_roles(role1)
+                await member.add_roles(Muted) #nadanie roli muted
+                await message.channel.send(message.author.name + " został zmutowany na 15 minut.")
+                banned_messages.append(payload.message_id) #dodanie wiadomości do listy zbanowanych
+                banned_messages_txt.write_banned_messages(payload.message_id) #dodanie wiadomości do pliku
+                banned_users_txt.write_banned_user(roles_list, message.author.id) #dodatnie informacji o zbanowanym uzytkowniku do txt
+                users_ban_stats.update_stats(message.author.id) #zaktualizowanie statystyk banow
+                await asyncio.sleep(20)
+                await member.remove_roles(Muted) #usunięcie roli muted
+                for role in roles_list: #przywracanie roli
+                    if role.name != "@everyone":
+                        role1 = discord.utils.get(guild.roles, name=role.name)
+                        await member.add_roles(role1)
+                await message.channel.send(message.author.name + " został odmutowany.")
+                open('banned_users.txt', 'w').close() #otwarcie i zamknięcie pliku w celu usunięcia jego zawartości
+                print("User info file cleared")
