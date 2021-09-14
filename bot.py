@@ -16,6 +16,7 @@ client1 = commands.Bot(command_prefix='$', intents=intents)
 async def on_ready():
   print('We have logged in as {0.user}'.format(client1))
   await banned_users_txt.read_banned_user(client1) #po zalogowaniu wykonuje funkcję
+  users_ban_stats.load_stats_from_file() #po zalogowaniu zaladuj dane z pliku
 
 @client1.event
 async def on_message(message): #zdarzenie wysłania wiadomosci
@@ -51,6 +52,7 @@ async def on_raw_reaction_add(payload): #licznik emoji
         banned_messages.append(payload.message_id) #dodanie wiadomości do listy zbanowanych
         banned_messages_txt.write_banned_messages(payload.message_id) #dodanie wiadomości do pliku
         banned_users_txt.write_banned_user(roles_list, message.author.id) #dodatnie informacji o zbanowanym uzytkowniku do txt
+        users_ban_stats.update_stats(message.author.id) #zaktualizowanie statystyk banow
         await asyncio.sleep(900)
         await member.remove_roles(Muted) #usunięcie roli muted
         for role in roles_list: #przywracanie roli
@@ -58,7 +60,7 @@ async def on_raw_reaction_add(payload): #licznik emoji
             role1 = discord.utils.get(guild.roles, name=role.name)
             await member.add_roles(role1)
         await message.channel.send(message.author.name + " został odmutowany.")
-        open('banned_user_info.txt', 'w').close() #otwarcie i zamknięcie pliku w celu usunięcia jego zawartości
+        open('banned_users.txt', 'w').close() #otwarcie i zamknięcie pliku w celu usunięcia jego zawartości
         print("User info file cleared")
 
 @client1.event
@@ -69,7 +71,7 @@ async def on_member_join(member):
 
 @client1.command()
 async def cards(ctx): #statystyki banow
-  await users_ban_stats.stats(ctx, client1, banned_messages)
+  await users_ban_stats.display_stats(ctx, client1)
       
 banned_messages_txt.read_banned_messages(banned_messages)
 client1.run("ODY3NDg1MTY0NDAwODAzODkw.YPhyhA.Wmey0A7HWGerDNLB7mzgEBOnivE")
