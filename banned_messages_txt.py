@@ -4,23 +4,35 @@
 import discord
 from discord.ext import commands
 from discord.utils import get
+import time
+from tkinter import *
 
-def read_banned_messages(banned_messages): #odczyt wczesniej zapisanych id wiadomosci
+def read_banned_messages(banned_messages, terminal): #odczyt wczesniej zapisanych id wiadomosci
     banned_messages_file = open("banned_messages_list.txt", "r")
-    print("Copying ids message from file to list ...")
+    sec = time.localtime() # get struct_time
+    terminal.insert(END, time.strftime("%d/%m/%Y, %H:%M:%S", sec) + "   Copying messages ids from file to list ...")
     try:
         for line in banned_messages_file.readlines():
             banned_messages.append(int(line))
+        terminal.insert(END, "Records were copied to list.")
+    except:
+        terminal.insert(END, "[Error] Cannot copy messages ids.")
+        terminal.itemconfig(END, fg = "red")
     finally:
-        print("File closed, records were copied to list")
+        terminal.insert(END, "File closed.")
         banned_messages_file.close()
 
-def write_banned_messages(message_id): #zapis id nowej zbanowanej wiadomosci
+def write_banned_messages(message_id, terminal): #zapis id nowej zbanowanej wiadomosci
     banned_messages_file = open("banned_messages_list.txt", "a")
-    print("Writting new id message to file ...")
+    sec = time.localtime() # get struct_time
+    terminal.insert(END, time.strftime("%d/%m/%Y, %H:%M:%S", sec) + "   Writting new id message to file ...")
     try:
         banned_messages_file.write(str(message_id)+ "\n")
-        print("New banned message id : " + str(message_id))
+        terminal.insert(END, "New banned message id : " + str(message_id))
+        terminal.insert(END, "List rewritted.")
+    except:
+        terminal.insert(END, "[Error] Cannot write message id.")
+        terminal.itemconfig(END, fg = "red")
     finally:
-        print("File closed, list rewritted")
+        terminal.insert(END, "File closed.")
         banned_messages_file.close()

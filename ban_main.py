@@ -8,8 +8,10 @@ import asyncio
 import banned_messages_txt
 import banned_users_txt
 import users_ban_stats
+import time
+from tkinter import *
 
-async def ban_function(payload, client1, banned_messages, ban_duration, min_reaction_amount):
+async def ban_function(payload, client1, banned_messages, ban_duration, min_reaction_amount, terminal):
     if payload.emoji.name == '\U0001F7E8': #porównanie emoji
         channel = client1.get_channel(payload.channel_id) #zapisanie obiektu channel
         message = await channel.fetch_message(payload.message_id) #zapisanie obiektu message
@@ -34,9 +36,9 @@ async def ban_function(payload, client1, banned_messages, ban_duration, min_reac
                 await member.add_roles(Muted) #nadanie roli muted
                 await message.channel.send(message.author.name + " został zmutowany na 15 minut.")
                 banned_messages.append(payload.message_id) #dodanie wiadomości do listy zbanowanych
-                banned_messages_txt.write_banned_messages(payload.message_id) #dodanie wiadomości do pliku
-                banned_users_txt.write_banned_user(roles_list, message.author.id) #dodatnie informacji o zbanowanym uzytkowniku do txt
-                users_ban_stats.update_stats(message.author.id) #zaktualizowanie statystyk banow
+                banned_messages_txt.write_banned_messages(payload.message_id, terminal) #dodanie wiadomości do pliku
+                banned_users_txt.write_banned_user(roles_list, message.author.id, terminal) #dodatnie informacji o zbanowanym uzytkowniku do txt
+                users_ban_stats.update_stats(message.author.id, terminal) #zaktualizowanie statystyk banow
                 await asyncio.sleep(ban_duration)
                 await member.remove_roles(Muted) #usunięcie roli muted
                 for role in roles_list: #przywracanie roli
@@ -44,5 +46,10 @@ async def ban_function(payload, client1, banned_messages, ban_duration, min_reac
                         role1 = discord.utils.get(guild.roles, name=role.name)
                         await member.add_roles(role1)
                 await message.channel.send(message.author.name + " został odmutowany.")
-                open('banned_users.txt', 'w').close() #otwarcie i zamknięcie pliku w celu usunięcia jego zawartości
-                print("User info file cleared")
+                try:
+                    open('banned_users.txt', 'w').close() #otwarcie i zamknięcie pliku w celu usunięcia jego zawartości
+                    sec = time.localtime() # get struct_time
+                    terminal.insert(END, time.strftime("%d/%m/%Y, %H:%M:%S", sec) + "   User banned file cleared.")
+                except:
+                    sec = time.localtime() # get struct_time
+                    terminal.insert(END, time.strftime("%d/%m/%Y, %H:%M:%S", sec) + "   [Error] Cannot clear banned_users file.")
