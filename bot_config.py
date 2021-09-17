@@ -45,6 +45,9 @@ def write_config_to_file(server_ban_config, main_gui_terminal):
 def save_config_to_file_window(server_ban_config, main_gui_terminal):
     save_config_windows = Tk()
     save_config_windows.title("Yellow Card Bot - Save config to file")
+    save_config_windows.grid_rowconfigure(1, weight=1)
+    save_config_windows.grid_columnconfigure(1, weight=1)
+    save_config_windows.grid_columnconfigure(0, weight=1)
     ask = Label(save_config_windows, text="Do you want save configuration to file ?")
 
     def onclick_yes_button():
@@ -57,14 +60,17 @@ def save_config_to_file_window(server_ban_config, main_gui_terminal):
     yes_button = Button(save_config_windows, text="    YES   ", command=onclick_yes_button)
     no_button = Button(save_config_windows, text="    NO   ", command=onclick_no_button)
     ask.grid(row = 0, column=0, columnspan=2, pady=5, padx=5)
-    yes_button.grid(row = 1, column=0, pady=5, padx=5)
-    no_button.grid(row = 1, column=1, pady=5, padx=5)
+    yes_button.grid(row = 1, column=0, pady=5, padx=15, sticky="en")
+    no_button.grid(row = 1, column=1, pady=5, padx=15, sticky="wn")
 
     save_config_windows.mainloop()
 
 def enter_config(server_ban_config, main_gui_terminal):
     config_gui = Tk()
     config_gui.title("Yellow Card Bot - Configuration")
+    config_gui.grid_rowconfigure(4, weight=1)
+    config_gui.grid_columnconfigure(1, weight=1)
+    config_gui.grid_columnconfigure(0, weight=1)
 
     oauth_token_label = Label(config_gui, text="Enter oAuth Token : ")#zadeklarowanie widgetow
     guild_id_label = Label(config_gui, text="Enter Guild ID : ")
@@ -113,14 +119,14 @@ def enter_config(server_ban_config, main_gui_terminal):
 
     enter_button = Button(config_gui, text="    ENTER   ", command=onclick_enter_button)
 
-    oauth_token_label.grid(row=0, column=0, pady=5, padx=10) #ustawienie widgetow w siatce
-    guild_id_label.grid(row=1, column=0, pady=5, padx=10)
-    ban_duration_label.grid(row=2, column=0, pady=5, padx=10)
-    min_reaction_amount_label.grid(row=3, column=0, pady=5, padx=10)
-    oauth_token_entry.grid(row=0, column=1, pady=5, padx=10) 
-    guild_id_entry.grid(row=1, column=1, pady=5, padx=10)
-    ban_duration_entry.grid(row=2, column=1, pady=5, padx=10)
-    min_reaction_amount_entry.grid(row=3, column=1, pady=5, padx=10)
-    enter_button.grid(row=4, column=0, columnspan=2, padx=30, pady=30)
+    oauth_token_label.grid(row=0, column=0, pady=5, padx=10, sticky="e") #ustawienie widgetow w siatce
+    guild_id_label.grid(row=1, column=0, pady=5, padx=10, sticky="e")
+    ban_duration_label.grid(row=2, column=0, pady=5, padx=10, sticky="e")
+    min_reaction_amount_label.grid(row=3, column=0, pady=5, padx=10, sticky="e")
+    oauth_token_entry.grid(row=0, column=1, pady=5, padx=10, sticky="w") 
+    guild_id_entry.grid(row=1, column=1, pady=5, padx=10, sticky="w")
+    ban_duration_entry.grid(row=2, column=1, pady=5, padx=10, sticky="w")
+    min_reaction_amount_entry.grid(row=3, column=1, pady=5, padx=10, sticky="w")
+    enter_button.grid(row=4, column=0, columnspan=2, padx=30, pady=30, sticky= "n")
 
     config_gui.mainloop()
