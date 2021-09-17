@@ -39,7 +39,7 @@ async def on_message(message): #zdarzenie wysłania wiadomosci
 
 @client1.event
 async def on_raw_reaction_add(payload): #w momencie dodania reakcji
-  await ban_main.ban_function(payload, client1, banned_messages, server_ban_config["ban_duration"], server_ban_config["min_reaction_amount"], terminal) #glowna funkcja odpowiedzialna za bany
+  await ban_main.ban_function(payload, client1, banned_messages, server_ban_config["ban_duration"], server_ban_config["min_reaction_amount"], terminal, checkVar1) #glowna funkcja odpowiedzialna za bany
 
 @client1.event
 async def on_member_join(member): #nadanie roli nowemu użytkownikowi
@@ -49,7 +49,10 @@ async def on_member_join(member): #nadanie roli nowemu użytkownikowi
 
 @client1.command()
 async def cards(ctx): #statystyki banow
-  await users_ban_stats.display_stats(ctx, client1)
+  if checkVar2.get() == True: #sprawdzenie czy komenda jest wlaczona w gui
+    await users_ban_stats.display_stats(ctx, client1)
+  else:
+    await ctx.send("Command $cards is off :(")
 
 def discord_client_thread():
   try:
@@ -65,9 +68,12 @@ def discord_client_thread():
 #Kod GUI
 main_gui = Tk()
 main_gui.title("Yellow Card Bot v0.4")
-main_gui.geometry("500x300")
+main_gui.geometry("600x350")
 main_gui.grid_rowconfigure(1, weight=1)
-main_gui.grid_columnconfigure(3, weight=1)
+main_gui.grid_columnconfigure(5, weight=1)
+
+checkVar1 = BooleanVar() #zmienne check buttonow
+checkVar2 = BooleanVar()
 
 def onclick_connect_button():
   if server_ban_config:
@@ -99,14 +105,20 @@ scrollbar.config(command=terminal.yview)
 connect_button = Button(main_gui, text="Connect", command=onclick_connect_button)
 config_button = Button(main_gui, text="Config", command=onclick_config_button)
 disconnect_button = Button(main_gui, text="Disconnect", command=onclick_disconnect_button, state=DISABLED)
+check_button_1 = Checkbutton(main_gui, text="Ban for cards", variable=checkVar1, onvalue=True, offvalue=False)
+check_button_2 = Checkbutton(main_gui, text="Command $cards", variable=checkVar2, onvalue=True, offvalue=False)
+check_button_1.select()
+check_button_2.select()
 
-terminal.grid(row=1, column=0, columnspan=4, padx=0, pady=0, sticky="nsew")
-scrollbar.grid(row=1, column=4, sticky="ns")
+terminal.grid(row=1, column=0, columnspan=6, padx=0, pady=0, sticky="nsew")
+scrollbar.grid(row=1, column=6, sticky="ns")
 connect_button.grid(row=0, column=0, padx=10, pady=10, ipadx=10)
 config_button.grid(row=0, column=1, padx=10, pady=10, ipadx=13)
 disconnect_button.grid(row=0, column=2, padx=10, pady=10, ipadx=8)
-feet_author.grid(row=2, column=3, columnspan=2, sticky="e")
+feet_author.grid(row=2, column=3, columnspan=3, sticky="e")
 feet_version.grid(row=2, column=0, columnspan=3, sticky="w")
+check_button_1.grid(row=0, column=3)
+check_button_2.grid(row=0, column=4)
 
 server_ban_config = bot_config.load_config_from_file(terminal)
    
