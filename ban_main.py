@@ -1,5 +1,4 @@
 #Glowna funkcja odpowiedzialna za banowanie. Wywolywana jest w momencie dodania reakcji do wiadomosci na kanale.
-#Wykorzystuje users_ban_stats.py, banned_users.py i banned_messages_txt.py
 
 import discord
 from discord.ext import commands
@@ -21,7 +20,10 @@ async def ban_function(payload, client1, banned_messages, ban_duration, min_reac
                 if payload.message_id in banned_messages:
                     await message.channel.send(message.author.name + " otrzymał już karę.")
                 else:
-                    await message.channel.send(message.author.name + " otrzymał trzy żółte kartki.")
+                    if min_reaction_amount < 5:
+                        await message.channel.send(message.author.name + " otrzymał " + str(min_reaction_amount) + " żółte kartki.")
+                    else:
+                        await message.channel.send(message.author.name + " otrzymał " + str(min_reaction_amount) + " żółtych kartek.")
                     guild = message.guild
                     Muted = discord.utils.get(guild.roles, name="Muted")
                     if not Muted: #tworzenie roli muted
@@ -35,11 +37,14 @@ async def ban_function(payload, client1, banned_messages, ban_duration, min_reac
                             role1 = discord.utils.get(guild.roles, name=role.name)
                             await member.remove_roles(role1)
                     await member.add_roles(Muted) #nadanie roli muted
-                    await message.channel.send(message.author.name + " został zmutowany na 15 minut.")
+                    if ban_duration < 300:
+                        await message.channel.send(message.author.name + " został zmutowany na " + str(ban_duration)+ " sekund.")
+                    else:
+                        await message.channel.send(message.author.name + " został zmutowany na " + str(ban_duration//60)+ " minut.")
                     banned_messages.append(payload.message_id) #dodanie wiadomości do listy zbanowanych
                     banned_messages_txt.write_banned_messages(payload.message_id, terminal) #dodanie wiadomości do pliku
                     banned_users_txt.write_banned_user(roles_list, message.author.id, terminal) #dodatnie informacji o zbanowanym uzytkowniku do txt
-                    users_ban_stats.update_stats(message.author.id, terminal) #zaktualizowanie statystyk banow
+                    users_ban_stats.update_stats(message.author.id, terminal, ban_duration) #zaktualizowanie statystyk banow
                     await asyncio.sleep(ban_duration)
                     await member.remove_roles(Muted) #usunięcie roli muted
                     for role in roles_list: #przywracanie roli

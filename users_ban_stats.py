@@ -16,10 +16,10 @@ stats = {}
 
 async def display_stats(ctx, client1):
     await ctx.send("Users Ban Statistic:")
-    for user_id, cards in stats.items():
+    for user_id, stat in stats.items():
         user = client1.get_user(int(user_id))
-        time =  cards * 15
-        await ctx.send(user.display_name + " - " + str(cards) + "   |   " + str(time) + " minutes")
+        time =  stat[1] // 60
+        await ctx.send(user.display_name + " - " + str(stat[0]) + "   |   " + str(time) + " minutes")
 
 def writte_stats_to_file(terminal):
     try:
@@ -29,8 +29,7 @@ def writte_stats_to_file(terminal):
         terminal.insert(END, "User ban stats file updated, file closed.")
     except:
         terminal.insert(END, "[Error] Cannot rewritte ban_stats.json file.")
-        terminal.itemconfig(END, fg = "red")
-    
+        terminal.itemconfig(END, fg = "red")    
 
 def load_stats_from_file(terminal):
     sec = time.localtime() # get struct_time
@@ -52,17 +51,20 @@ def load_stats_from_file(terminal):
             terminal.insert(END, "[Error] Cannot read ban_stats.json file.")
             terminal.itemconfig(END, fg = "red")
 
-
-def update_stats(user_id, terminal):
+def update_stats(user_id, terminal, ban_time):
     sec = time.localtime() # get struct_time
     terminal.insert(END, time.strftime("%d/%m/%Y, %H:%M:%S", sec) + "   Updating users ban stats ...")
     if str(user_id) in stats:
         terminal.insert(END, "User id already exist in database, updating stats ...")
-        stats[str(user_id)] += 1
+        stats_list = stats.get(str(user_id))
+        stats_list[0] += 1
+        stats_list[1] += ban_time
+        stats[str(user_id)] = stats_list
         terminal.insert(END, "User ban stats updated.")
     else :
         terminal.insert(END, "User id is not exist in database, added new record ...")
-        stats[str(user_id)] = 1
+        stats_list = [1, ban_time]
+        stats[str(user_id)] = stats_list
         terminal.insert(END, "User ban stats added to database.")
     sec = time.localtime() # get struct_time
     terminal.insert(END, time.strftime("%d/%m/%Y, %H:%M:%S", sec) + "   Updating users ban stats file ...")
