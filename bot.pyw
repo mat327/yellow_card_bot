@@ -56,17 +56,6 @@ async def bans(ctx): #statystyki banow
   else:
     await ctx.send("Command $bans is off :(")
 
-def discord_client_thread():
-  try:
-    client1.run(bot_config_dict.get("oauth_token"))
-  except:
-    sec = time.localtime() # get struct_time
-    terminal.insert(END, time.strftime("%d/%m/%Y, %H:%M:%S", sec) + " [Error] Cannot connect to server. Check configuration variables.")
-    terminal.itemconfig(END, fg = "red")
-    connect_button.config(state=NORMAL)
-    bot_config_button.config(state=NORMAL)
-    disconnect_button.config(state=DISABLED)
-
 #Kod GUI
 main_gui = Tk()
 main_gui.title("Yellow Card Bot")
@@ -80,14 +69,24 @@ checkVar2 = BooleanVar()
 def onclick_connect_button():
   if bot_config_dict:
     if ban_func_config_dict:
-      global discord_client_thread_obj
-      discord_client_thread_obj = threading.Thread(target=discord_client_thread) #obiekt watku clienta discorda
-      discord_client_thread_obj.daemon = True #daemon thread (w momencie zamkniecia main tez przestaje dzialac)
-      discord_client_thread_obj.start() #uruchomienie watku clienta discorda
-      if discord_client_thread_obj.is_alive() == True:
-        connect_button.config(state=DISABLED)
-        bot_config_button.config(state=DISABLED)
-        disconnect_button.config(state=NORMAL)
+        loop = asyncio.get_event_loop()
+        loop.create_task(client1.start(bot_config_dict.get("oauth_token")))
+        global discord_client_thread_obj
+        discord_client_thread_obj=threading.Thread(target=loop.run_forever) #obiekt watku clienta discorda
+        discord_client_thread_obj.daemon = True #daemon thread (w momencie zamkniecia main tez przestaje dzialac)
+        try:
+          discord_client_thread_obj.start() #uruchomienie watku clienta discorda
+        except:
+          sec = time.localtime() # get struct_time
+          terminal.insert(END, time.strftime("%d/%m/%Y, %H:%M:%S", sec) + " [Error] Cannot connect to server. Check configuration variables.")
+          terminal.itemconfig(END, fg = "red")
+          connect_button.config(state=NORMAL)
+          bot_config_button.config(state=NORMAL)
+          disconnect_button.config(state=DISABLED)
+        if discord_client_thread_obj.is_alive() == True:
+          connect_button.config(state=DISABLED)
+          bot_config_button.config(state=DISABLED)
+          disconnect_button.config(state=NORMAL)
     else:
       sec = time.localtime() # get struct_time
       terminal.insert(END, time.strftime("%d/%m/%Y, %H:%M:%S", sec) + " [Error] No configuration variables were entered. Click Ban func config button.")

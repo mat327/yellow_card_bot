@@ -18,7 +18,8 @@ async def ban_function(payload, client1, banned_messages, ban_duration, min_reac
         if reaction and reaction.count > (min_reaction_amount-1): #porówanie ilości reakcji
             if func_on.get() == True:
                 if payload.message_id in banned_messages:
-                    await message.channel.send(message.author.name + " otrzymał już karę.")
+                    #await message.channel.send(message.author.name + " otrzymał już karę.")
+                    await message.reply(message.author.name + " otrzymał już karę.")
                 else:
                     if min_reaction_amount < 5:
                         await message.channel.send(message.author.name + " otrzymał " + str(min_reaction_amount) + " żółte kartki.")
