@@ -30,11 +30,11 @@ async def ban_function(payload, client1, banned_messages, ban_duration, min_reac
                     if not Muted: #tworzenie roli muted
                         Muted = await guild.create_role(name="Muted")
                         for channel in guild.channels:
-                            await channel.set_permissions(Muted, speak=True, send_messages=False, read_message_history=True, read_messages=False)
+                            await channel.set_permissions(Muted, speak=True, send_messages=False, read_message_history=True, read_messages=True)
                     member = await guild.fetch_member(message.author.id) #zapisanie obiektu użytkownika
                     roles_list = member.roles #lista roli zmutowanego użytkownika
                     for role in roles_list: #usuwanie dotychczasowych roli
-                        if role.name != "@everyone":
+                        if role.name != "@everyone" and role.name != "Server Booster":
                             role1 = discord.utils.get(guild.roles, name=role.name)
                             await member.remove_roles(role1)
                     await member.add_roles(Muted) #nadanie roli muted
@@ -49,7 +49,7 @@ async def ban_function(payload, client1, banned_messages, ban_duration, min_reac
                     await asyncio.sleep(ban_duration)
                     await member.remove_roles(Muted) #usunięcie roli muted
                     for role in roles_list: #przywracanie roli
-                        if role.name != "@everyone":
+                        if role.name != "@everyone" and role.name != "Server Booster":
                             role1 = discord.utils.get(guild.roles, name=role.name)
                             await member.add_roles(role1)
                     await message.channel.send(message.author.name + " został odmutowany.")
