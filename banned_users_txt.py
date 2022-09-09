@@ -47,7 +47,7 @@ async def read_banned_user(client1, guild_id, terminal): #odczyt pliku z info zb
                     await member.remove_roles(role) #usuniecie roli muted
                     terminal.insert(END, "Role 'Muted' deleted")
                 else:
-                    if strip_line != "@everyone": 
+                    if strip_line != "@everyone" and strip_line != "Server Booster": 
                         role = discord.utils.get(guild.roles, name=strip_line) #zapisanie obiektu roli
                         await member.add_roles(role) #nadanie roli uzytkownikowi
                         terminal.insert(END, strip_line + " ... done")
@@ -59,3 +59,62 @@ async def read_banned_user(client1, guild_id, terminal): #odczyt pliku z info zb
             banned_users_file.close()
             open('banned_users.txt', 'w').close() #otwarcie i zamkniecie pliku w celu usuniecia jego zawartosci
             terminal.insert(END, "File closed and cleared.")
+
+async def check_is_user_banned(user_id, terminal): #sprawdzenie czy użytkownik jest obecnie zbanowany
+    is_banned = False
+    sec = time.localtime() # get struct_time
+    terminal.insert(END, time.strftime("%d/%m/%Y, %H:%M:%S", sec) + "   Checking banned_users file ...")
+    filesize = os.path.getsize("banned_users.txt") #rozmiar pliku txt
+    if filesize == 0: #jezeli plik jest pusty funkcja nic nie robi
+        terminal.insert(END, "The file is empty.")
+        return is_banned
+    else:
+        terminal.insert(END, "Searching user id ...")     
+        try:
+            banned_users_file = open("banned_users.txt", "r") #otwarcie pliku
+            for line in banned_users_file.readlines():
+                strip_line = line.rstrip('\n') #usuniecie \n ze stringa
+                if strip_line.isdigit() : #jezeli linijka txt jest liczba
+                    if int(strip_line) == user_id:
+                        is_banned = True
+        except:
+            terminal.insert(END, "[Error] Cannot check if the user is banned.")
+            terminal.itemconfig(END, fg = "red")
+        finally:
+            banned_users_file.close()
+            terminal.insert(END, "File closed.")
+            return is_banned
+            
+async def delete_banned_user(user_id, terminal): #usuwanie info o zbanowanym użytkowniku
+    sec = time.localtime() # get struct_time
+    terminal.insert(END, time.strftime("%d/%m/%Y, %H:%M:%S", sec) + "   Deleting user from banned_users file ...")
+    try:
+        banned_users_file = open("banned_users.txt", "r") #otwarcie pliku
+        lines = banned_users_file.readlines()
+    except:
+        terminal.insert(END, "[Error] Cannot open banned_users file.")
+        terminal.itemconfig(END, fg = "red")
+    finally:
+        banned_users_file.close()
+        terminal.insert(END, "File closed.")
+
+    try:
+        banned_users_file = open("banned_users.txt", "a") #otwarcie pliku
+        delete = False
+        for line in lines:
+            strip_line = line.rstrip('\n') #usuniecie \n ze stringa
+
+            if strip_line == str(user_id):
+                delete = True
+
+            if strip_line.isdigit() and delete:
+                delete = False
+
+            if delete == False:
+                banned_users_file.write(line)
+    except:
+        terminal.insert(END, "[Error] Cannot open banned_users file.")
+        terminal.itemconfig(END, fg = "red")
+    finally:
+        banned_users_file.close()
+        terminal.insert(END, "File closed.")

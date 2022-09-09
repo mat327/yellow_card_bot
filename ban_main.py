@@ -32,6 +32,13 @@ async def ban_function(payload, client1, banned_messages, ban_duration, min_reac
                         for channel in guild.channels:
                             await channel.set_permissions(Muted, speak=True, send_messages=False, read_message_history=True, read_messages=True)
                     member = await guild.fetch_member(message.author.id) #zapisanie obiektu użytkownika
+
+                    if banned_users_txt.check_is_user_banned(message.author.id, terminal): #sprawdzenie czy użytkownik jest już zbanowany
+                        await message.channel.send(message.author.name + " otrzyma karę po zakończeniu obecnej.")
+
+                    while banned_users_txt.check_is_user_banned(message.author.id, terminal): #sprawdzenie czy użytkownik jest już zbanowany
+                        await asyncio.sleep(10)
+
                     roles_list = member.roles #lista roli zmutowanego użytkownika
                     for role in roles_list: #usuwanie dotychczasowych roli
                         if role.name != "@everyone" and role.name != "Server Booster":
@@ -54,9 +61,9 @@ async def ban_function(payload, client1, banned_messages, ban_duration, min_reac
                             await member.add_roles(role1)
                     await message.channel.send(message.author.name + " został odmutowany.")
                     try:
-                        open('banned_users.txt', 'w').close() #otwarcie i zamknięcie pliku w celu usunięcia jego zawartości
+                        banned_users_txt.delete_banned_user(message.author.id, terminal) #usuniecie użytkownika z pliku zbanowanych uzytkownikow
                         sec = time.localtime() # get struct_time
-                        terminal.insert(END, time.strftime("%d/%m/%Y, %H:%M:%S", sec) + "   User banned file cleared.")
+                        terminal.insert(END, time.strftime("%d/%m/%Y, %H:%M:%S", sec) + "   User banned file updated.")
                     except:
                         sec = time.localtime() # get struct_time
                         terminal.insert(END, time.strftime("%d/%m/%Y, %H:%M:%S", sec) + "   [Error] Cannot clear banned_users file.")
