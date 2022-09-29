@@ -60,7 +60,7 @@ async def read_banned_user(client1, guild_id, terminal): #odczyt pliku z info zb
             open('banned_users.txt', 'w').close() #otwarcie i zamkniecie pliku w celu usuniecia jego zawartosci
             terminal.insert(END, "File closed and cleared.")
 
-async def check_is_user_banned(user_id, terminal): #sprawdzenie czy użytkownik jest obecnie zbanowany
+def check_is_user_banned(user_id, terminal): #sprawdzenie czy użytkownik jest obecnie zbanowany
     is_banned = False
     sec = time.localtime() # get struct_time
     terminal.insert(END, time.strftime("%d/%m/%Y, %H:%M:%S", sec) + "   Checking banned_users file ...")
@@ -85,7 +85,7 @@ async def check_is_user_banned(user_id, terminal): #sprawdzenie czy użytkownik 
             terminal.insert(END, "File closed.")
             return is_banned
             
-async def delete_banned_user(user_id, terminal): #usuwanie info o zbanowanym użytkowniku
+def delete_banned_user(user_id, terminal): #usuwanie info o zbanowanym użytkowniku
     sec = time.localtime() # get struct_time
     terminal.insert(END, time.strftime("%d/%m/%Y, %H:%M:%S", sec) + "   Deleting user from banned_users file ...")
     try:
@@ -99,7 +99,7 @@ async def delete_banned_user(user_id, terminal): #usuwanie info o zbanowanym uż
         terminal.insert(END, "File closed.")
 
     try:
-        banned_users_file = open("banned_users.txt", "a") #otwarcie pliku
+        banned_users_file = open("banned_users.txt", "w") #otwarcie pliku
         delete = False
         for line in lines:
             strip_line = line.rstrip('\n') #usuniecie \n ze stringa
@@ -107,7 +107,7 @@ async def delete_banned_user(user_id, terminal): #usuwanie info o zbanowanym uż
             if strip_line == str(user_id):
                 delete = True
 
-            if strip_line.isdigit() and delete:
+            if strip_line.isdigit() and strip_line != str(user_id):
                 delete = False
 
             if delete == False:

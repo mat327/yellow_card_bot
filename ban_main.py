@@ -21,6 +21,7 @@ async def ban_function(payload, client1, banned_messages, ban_duration, min_reac
                     #await message.channel.send(message.author.name + " otrzymał już karę.")
                     await message.reply(message.author.name + " otrzymał już karę.")
                 else:
+                    banned_messages.append(payload.message_id) #dodanie wiadomości do listy zbanowanych
                     if min_reaction_amount < 5:
                         await message.channel.send(message.author.name + " otrzymał " + str(min_reaction_amount) + " żółte kartki.")
                     else:
@@ -31,7 +32,6 @@ async def ban_function(payload, client1, banned_messages, ban_duration, min_reac
                         Muted = await guild.create_role(name="Muted")
                         for channel in guild.channels:
                             await channel.set_permissions(Muted, speak=True, send_messages=False, read_message_history=True, read_messages=True)
-                    member = await guild.fetch_member(message.author.id) #zapisanie obiektu użytkownika
 
                     if banned_users_txt.check_is_user_banned(message.author.id, terminal): #sprawdzenie czy użytkownik jest już zbanowany
                         await message.channel.send(message.author.name + " otrzyma karę po zakończeniu obecnej.")
@@ -39,6 +39,7 @@ async def ban_function(payload, client1, banned_messages, ban_duration, min_reac
                     while banned_users_txt.check_is_user_banned(message.author.id, terminal): #sprawdzenie czy użytkownik jest już zbanowany
                         await asyncio.sleep(10)
 
+                    member = await guild.fetch_member(message.author.id) #zapisanie obiektu użytkownika
                     roles_list = member.roles #lista roli zmutowanego użytkownika
                     for role in roles_list: #usuwanie dotychczasowych roli
                         if role.name != "@everyone" and role.name != "Server Booster":
@@ -49,11 +50,13 @@ async def ban_function(payload, client1, banned_messages, ban_duration, min_reac
                         await message.channel.send(message.author.name + " został zmutowany na " + str(ban_duration)+ " sekund.")
                     else:
                         await message.channel.send(message.author.name + " został zmutowany na " + str(ban_duration//60)+ " minut.")
-                    banned_messages.append(payload.message_id) #dodanie wiadomości do listy zbanowanych
+
                     banned_messages_txt.write_banned_messages(payload.message_id, terminal) #dodanie wiadomości do pliku
                     banned_users_txt.write_banned_user(roles_list, message.author.id, terminal) #dodatnie informacji o zbanowanym uzytkowniku do txt
                     users_ban_stats.update_stats(message.author.id, terminal, ban_duration) #zaktualizowanie statystyk banow
+
                     await asyncio.sleep(ban_duration)
+
                     await member.remove_roles(Muted) #usunięcie roli muted
                     for role in roles_list: #przywracanie roli
                         if role.name != "@everyone" and role.name != "Server Booster":
