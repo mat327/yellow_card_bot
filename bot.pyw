@@ -49,10 +49,17 @@ async def on_member_join(member): #nadanie roli nowemu użytkownikowi
   Gosc = discord.utils.get(guild.roles, name="Zwykły")
   await member.add_roles(Gosc)
 
-@client1.command()
-async def bans(ctx): #statystyki banow
+@client1.hybrid_command()
+async def bans(ctx, sort_by=""): #statystyki banow
   if checkVar2.get() == True: #sprawdzenie czy komenda jest wlaczona w gui
-    await users_ban_stats.display_stats(ctx, client1)
+    if sort_by == "time":
+      await users_ban_stats.display_stats(ctx, client1, "time")
+    elif sort_by == "amount":
+      await users_ban_stats.display_stats(ctx, client1, "amount")
+    elif sort_by == "username":
+      await users_ban_stats.display_stats(ctx, client1, "username")
+    else :
+      await users_ban_stats.display_stats(ctx, client1, "time")
   else:
     await ctx.send("Command $bans is off :(")
 
