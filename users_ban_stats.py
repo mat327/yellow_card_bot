@@ -14,7 +14,7 @@ import time
 #dlatego została zastosowana zmiana typu na str dla user_id
 stats = {}
 
-async def display_stats(ctx, client1, sort_by):
+async def display_stats(ctx, client1, sort_by): 
     if sort_by == "time":
         sort_stats = sorted(stats.items(), key=lambda x: x[1][1], reverse=True)
     elif sort_by == "amount":
@@ -22,11 +22,16 @@ async def display_stats(ctx, client1, sort_by):
     elif sort_by == "username":
         sort_stats = sorted(stats.items(), key=lambda x: x[0], reverse=False)
     
-    message = "Users Ban Statistic:\n"
-    for x in sort_stats:
-        user = client1.get_user(int(x[0]))
-        time =  x[1][1] // 60
-        message += user.display_name + " - " + str(x[1][0]) + "   |   " + str(time) + " minutes \n"
+    async with ctx.typing():
+        message = "Users Ban Statistic:\n"
+        for x in sort_stats:
+            try :
+                user = client1.get_user(int(x[0]))
+                time =  x[1][1] // 60
+                message += user.display_name + " - " + str(x[1][0]) + "   |   " + str(time) + " minutes \n"
+                print(x)
+            except:
+                pass
     await ctx.send(message)
 
 def writte_stats_to_file(terminal):
