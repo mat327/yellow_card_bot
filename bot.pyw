@@ -14,6 +14,9 @@ import threading
 import time
 import os
 
+import command_drink
+import command_dog_cat
+
 #zmienne wykorzystywane w kodzie
 banned_messages = []
 bot_config_dict = dict()
@@ -62,6 +65,21 @@ async def bans(ctx, sort_by=""): #statystyki banow
       await users_ban_stats.display_stats(ctx, client1, "time")
   else:
     await ctx.send("Command $bans is off :(")
+
+@client1.hybrid_command() #komenda $drink
+async def drink(ctx): 
+    quote = command_drink.get_drink()
+    await ctx.send(quote) 
+
+@client1.hybrid_command() #komenda $cat
+async def cat(ctx): 
+    quote = command_dog_cat.get_cat()
+    await ctx.send(quote) 
+
+@client1.hybrid_command() #komenda $dog
+async def dog(ctx): 
+    quote = command_dog_cat.get_dog()
+    await ctx.send(quote) 
 
 #Kod GUI
 main_gui = Tk()

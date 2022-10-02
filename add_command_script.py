@@ -5,31 +5,9 @@ url = "https://discord.com/api/v10/applications/867485164400803890/commands"
 
 # This is an example CHAT_INPUT or Slash Command, with a type of 1
 json = {
-    "name": "bans",
+    "name": "dog",
     "type": 1,
-    "description": "Displays the current user ban statistics",
-    "options": [
-        {
-            "name": "sort_by",
-            "description": "Sort user ban statistics by ...",
-            "type": 3,
-            "required": False,
-            "choices": [
-                {
-                    "name": "Amount",
-                    "value": "amount"
-                },
-                {
-                    "name": "Time",
-                    "value": "time"
-                },
-                {
-                    "name": "Username",
-                    "value": "username"
-                }
-            ]
-        }
-    ]
+    "description": "Sends a picture of the dog",
 }
 
 # For authorization, you can use either your bot token
