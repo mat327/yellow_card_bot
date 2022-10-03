@@ -67,7 +67,7 @@ def save_config_to_file_window(bot_config_dict, main_gui_terminal):
 
 def enter_config(bot_config_dict, main_gui_terminal):
     config_gui = Tk()
-    config_gui.title("Yellow Card Bot - Configuration")
+    config_gui.title("Elo Server Bot - Configuration")
     config_gui.grid_rowconfigure(2, weight=1)
     config_gui.grid_columnconfigure(1, weight=1)
     config_gui.grid_columnconfigure(0, weight=1)

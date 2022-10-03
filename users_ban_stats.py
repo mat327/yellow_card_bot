@@ -29,7 +29,6 @@ async def display_stats(ctx, client1, sort_by):
                 user = client1.get_user(int(x[0]))
                 time =  x[1][1] // 60
                 message += user.display_name + " - " + str(x[1][0]) + "   |   " + str(time) + " minutes \n"
-                print(x)
             except:
                 pass
     await ctx.send(message)

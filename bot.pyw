@@ -9,6 +9,7 @@ import users_ban_stats
 import ban_main
 import bot_config
 import ban_func_config
+import functionalities_config
 from tkinter import *
 import threading
 import time
@@ -21,6 +22,8 @@ import command_dog_cat
 banned_messages = []
 bot_config_dict = dict()
 ban_func_config_dict = dict()
+functionalities_config_dict = dict()
+functionalities_config_dict = {"ban_func": 1, "ban_cmd": 0, "drink_cmd": 0, "cat_cmd": 0, "dog_cmd": 1}
 
 #konfiguracja clienta discorda
 intents = discord.Intents.default()
@@ -44,7 +47,7 @@ async def on_message(message): #zdarzenie wysłania wiadomosci
 
 @client1.event
 async def on_raw_reaction_add(payload): #w momencie dodania reakcji
-  await ban_main.ban_function(payload, client1, banned_messages, ban_func_config_dict["ban_duration"], ban_func_config_dict["min_reaction_amount"], terminal, checkVar1) #glowna funkcja odpowiedzialna za bany
+  await ban_main.ban_function(payload, client1, banned_messages, ban_func_config_dict["ban_duration"], ban_func_config_dict["min_reaction_amount"], terminal, functionalities_config_dict["ban_func"]) #glowna funkcja odpowiedzialna za bany
 
 @client1.event
 async def on_member_join(member): #nadanie roli nowemu użytkownikowi
@@ -54,7 +57,7 @@ async def on_member_join(member): #nadanie roli nowemu użytkownikowi
 
 @client1.hybrid_command()
 async def bans(ctx, sort_by=""): #statystyki banow
-  if checkVar2.get() == True: #sprawdzenie czy komenda jest wlaczona w gui
+  if functionalities_config_dict["ban_cmd"] == 1: #sprawdzenie czy komenda jest wlaczona w gui
     if sort_by == "time":
       await users_ban_stats.display_stats(ctx, client1, "time")
     elif sort_by == "amount":
@@ -64,32 +67,38 @@ async def bans(ctx, sort_by=""): #statystyki banow
     else :
       await users_ban_stats.display_stats(ctx, client1, "time")
   else:
-    await ctx.send("Command $bans is off :(")
+    await ctx.send("Command /bans is off :(")
 
 @client1.hybrid_command() #komenda $drink
-async def drink(ctx): 
+async def drink(ctx):
+  if functionalities_config_dict["drink_cmd"] == 1: #sprawdzenie czy komenda jest wlaczona w gui 
     quote = command_drink.get_drink()
     await ctx.send(quote) 
+  else:
+    await ctx.send("Command /drink is off :(")
 
 @client1.hybrid_command() #komenda $cat
-async def cat(ctx): 
+async def cat(ctx):
+  if functionalities_config_dict["cat_cmd"] == 1: #sprawdzenie czy komenda jest wlaczona w gui 
     quote = command_dog_cat.get_cat()
     await ctx.send(quote) 
+  else:
+    await ctx.send("Command /cat is off :(")
 
 @client1.hybrid_command() #komenda $dog
-async def dog(ctx): 
+async def dog(ctx):
+  if functionalities_config_dict["dog_cmd"] == 1: #sprawdzenie czy komenda jest wlaczona w gui 
     quote = command_dog_cat.get_dog()
-    await ctx.send(quote) 
+    await ctx.send(quote)
+  else:
+    await ctx.send("Command /dog is off :(") 
 
 #Kod GUI
 main_gui = Tk()
-main_gui.title("Yellow Card Bot")
+main_gui.title("Elo Server Bot")
 main_gui.geometry("700x400")
 main_gui.grid_rowconfigure(1, weight=1)
 main_gui.grid_columnconfigure(6, weight=1)
-
-checkVar1 = BooleanVar() #zmienne check buttonow
-checkVar2 = BooleanVar()
 
 def onclick_connect_button():
   if bot_config_dict:
@@ -127,6 +136,9 @@ def onclick_bot_config_button():
 def onclick_ban_func_config_button():
   ban_func_config.enter_config(ban_func_config_dict, terminal)
 
+def onclick_functionalities_config_button():
+  functionalities_config.enter_config(functionalities_config_dict, terminal)
+
 def onclick_disconnect_button():
   main_gui.destroy()
   os.startfile("bot.pyw")
@@ -134,25 +146,22 @@ def onclick_disconnect_button():
 scrollbar = Scrollbar(main_gui, orient="vertical")
 terminal = Listbox(main_gui, yscrollcommand=scrollbar.set, background="black", foreground="white")
 feet_author = Label(main_gui, text= " Author : Mateusz Białek     ")
-feet_version = Label(main_gui, text="     Version : 0.4 ")
+feet_version = Label(main_gui, text="     Version : 0.5 ")
 scrollbar.config(command=terminal.yview)
 connect_button = Button(main_gui, text="Connect", command=onclick_connect_button)
-bot_config_button = Button(main_gui, text="Server Config", command=onclick_bot_config_button)
+bot_config_button = Button(main_gui, text="Bot Config", command=onclick_bot_config_button)
 ban_func_config_button = Button(main_gui, text="Ban Func Config", command=onclick_ban_func_config_button)
+functionalities_config_button = Button(main_gui, text="On/Off functionalities", command=onclick_functionalities_config_button)
 disconnect_button = Button(main_gui, text="Disconnect", command=onclick_disconnect_button, state=DISABLED)
-check_button_1 = Checkbutton(main_gui, text="Ban for cards", variable=checkVar1, onvalue=True, offvalue=False)
-check_button_2 = Checkbutton(main_gui, text="Command $bans", variable=checkVar2, onvalue=True, offvalue=False)
-check_button_1.select()
-check_button_2.select()
+
 
 terminal.grid(row=1, column=0, columnspan=7, padx=0, pady=0, sticky="nsew")
 scrollbar.grid(row=1, column=7, sticky="ns")
 connect_button.grid(row=0, column=0, padx=5, pady=5, ipadx=10)
-bot_config_button.grid(row=0, column=1, padx=5, pady=5, ipadx=13)
-ban_func_config_button.grid(row=0, column=2, padx=5, pady=5, ipadx=13)
-disconnect_button.grid(row=0, column=3, padx=5, pady=5, ipadx=8)
-check_button_1.grid(row=0, column=4)
-check_button_2.grid(row=0, column=5)
+bot_config_button.grid(row=0, column=2, padx=5, pady=5, ipadx=13)
+ban_func_config_button.grid(row=0, column=3, padx=5, pady=5, ipadx=13)
+disconnect_button.grid(row=0, column=1, padx=5, pady=5, ipadx=8)
+functionalities_config_button.grid(row=0, column=4, padx=5, pady=5, ipadx=10)
 feet_author.grid(row=2, column=3, columnspan=4, sticky="e")
 feet_version.grid(row=2, column=0, columnspan=3, sticky="w")
 
