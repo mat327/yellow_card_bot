@@ -23,7 +23,7 @@ banned_messages = []
 bot_config_dict = dict()
 ban_func_config_dict = dict()
 functionalities_config_dict = dict()
-functionalities_config_dict = {"ban_func": 1, "ban_cmd": 0, "drink_cmd": 0, "cat_cmd": 0, "dog_cmd": 1}
+functionalities_config_dict = {"ban_func": 1, "ban_cmd": 1, "drink_cmd": 1, "cat_cmd": 1, "dog_cmd": 1}
 
 #konfiguracja clienta discorda
 intents = discord.Intents.default()

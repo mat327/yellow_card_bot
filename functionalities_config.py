@@ -22,6 +22,16 @@ def enter_config(functionalities_config_dict, main_gui_terminal):
         functionalities_config_dict["drink_cmd"] = drink_cmd_check_var.get()
         functionalities_config_dict["cat_cmd"] = cat_cmd_check_var.get()
         functionalities_config_dict["dog_cmd"] = dog_cmd_check_var.get()
+
+        sec = time.localtime() # get struct_time
+        main_gui_terminal.insert(tk.END, time.strftime("%d/%m/%Y, %H:%M:%S", sec) + "  Functionalities status :")
+        
+        for x, y in functionalities_config_dict.items():
+            if y == 1:
+                main_gui_terminal.insert(tk.END, x + " : " + "On\n")
+            else:
+                main_gui_terminal.insert(tk.END, x + " : " + "Off\n")
+
         functionalities_gui.destroy() #zamkniecie okna/ przerwanie mainloop   
 
     ban_func_check_button = tk.Checkbutton(functionalities_gui, text="Ban for cards", variable=ban_func_check_var)
