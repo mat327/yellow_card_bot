@@ -12,6 +12,7 @@ import bot_config
 import ban_func_config
 import functionalities_config
 import firebase_backup
+import firebase_rtdb_backup
 
 from tkinter import *
 import threading
@@ -42,6 +43,7 @@ async def on_ready():
   await banned_users_txt.read_banned_user(client1, bot_config_dict["guild_id"], terminal) #po zalogowaniu przywraca role zbanowanym użytkownikom 
   users_ban_stats.load_stats_from_file(terminal) #po zalogowaniu laduje statystyki banow z pliku
 
+  #firebase_rtdb_backup.create_backup_firebase(banned_messages)
   #firebase_backup.create_backup_firebase(banned_messages)
 
 @client1.event
