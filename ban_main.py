@@ -55,7 +55,7 @@ async def ban_function(payload, client1, banned_messages, ban_duration, min_reac
                     banned_messages_txt.write_banned_messages(payload.message_id, terminal) #dodanie wiadomości do pliku
                     banned_users_txt.write_banned_user(roles_list, message.author.id, terminal) #dodatnie informacji o zbanowanym uzytkowniku do txt
                     users_ban_stats.update_stats(message.author.id, terminal, ban_duration) #zaktualizowanie statystyk banow
-                    firebase_backup.make_backup_firebase(payload.message_id, message.author.id, ban_duration, terminal) #aktualizacja backupu firebase
+                    firebase_backup.update_backup_firebase(payload.message_id, message.author.id, ban_duration, terminal) #aktualizacja backupu firebase
 
                     await asyncio.sleep(ban_duration)
 

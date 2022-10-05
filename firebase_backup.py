@@ -5,11 +5,13 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 
+import users_ban_stats
+
 cred = credentials.Certificate("firebase_key.json")
 firebase_admin.initialize_app(cred)
 db=firestore.client()
 
-def make_backup_firebase(msg_id, user_id, ban_duration, terminal):
+def update_backup_firebase(msg_id, user_id, ban_duration, terminal):
     #dodanie nowej wiadomosci do backupu
     data = {'msg_id': str(msg_id)}
     db.collection('banned_messages').add(data)
@@ -27,3 +29,12 @@ def make_backup_firebase(msg_id, user_id, ban_duration, terminal):
 
     sec = time.localtime() # get struct_time
     terminal.insert(END, time.strftime("%d/%m/%Y, %H:%M:%S", sec) + "   Firebase Backup updated.")
+
+def create_backup_firebase(banned_messages):
+    for msg in banned_messages:
+        data = {'msg_id': str(msg)}
+        db.collection('banned_messages').add(data)
+
+    for x,y in users_ban_stats.stats.items():
+        data = {'user_id': str(x), 'number_of_bans': y[0], 'bans_time': y[1]}
+        db.collection('banned_users_stats').add(data)

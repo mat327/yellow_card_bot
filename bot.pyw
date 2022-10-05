@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 from discord.utils import get
 import asyncio
+
 import banned_messages_txt
 import banned_users_txt
 import users_ban_stats
@@ -10,6 +11,8 @@ import ban_main
 import bot_config
 import ban_func_config
 import functionalities_config
+import firebase_backup
+
 from tkinter import *
 import threading
 import time
@@ -38,6 +41,8 @@ async def on_ready():
   banned_messages_txt.read_banned_messages(banned_messages, terminal) #po zalogowaniu wczytuje liste zbanowanych wiadomosci z pliku do pamieci
   await banned_users_txt.read_banned_user(client1, bot_config_dict["guild_id"], terminal) #po zalogowaniu przywraca role zbanowanym użytkownikom 
   users_ban_stats.load_stats_from_file(terminal) #po zalogowaniu laduje statystyki banow z pliku
+
+  #firebase_backup.create_backup_firebase(banned_messages)
 
 @client1.event
 async def on_message(message): #zdarzenie wysłania wiadomosci
