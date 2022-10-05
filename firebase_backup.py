@@ -11,7 +11,7 @@ db=firestore.client()
 
 def make_backup_firebase(msg_id, user_id, ban_duration, terminal):
     #dodanie nowej wiadomosci do backupu
-    data = {'msg_id': int(msg_id)}
+    data = {'msg_id': str(msg_id)}
     db.collection('banned_messages').add(data)
 
     #aktualizacja statystyk banow
