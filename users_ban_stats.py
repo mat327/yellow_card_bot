@@ -10,8 +10,6 @@ import os
 from tkinter import *
 import time
 
-import firebase_backup
-
 #zapisując do dict w pamięci zmnienne mają typ int ale w przypadku zapisu do pliku id ma typ str,
 #dlatego została zastosowana zmiana typu na str dla user_id
 stats = {}

@@ -11,8 +11,8 @@ import ban_main
 import bot_config
 import ban_func_config
 import functionalities_config
-import firebase_backup
-import firebase_rtdb_backup
+#import firebase_backup
+#import firebase_rtdb_backup
 
 from tkinter import *
 import threading

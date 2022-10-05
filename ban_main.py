@@ -7,7 +7,7 @@ import asyncio
 import banned_messages_txt
 import banned_users_txt
 import users_ban_stats
-import firebase_backup
+#import firebase_backup
 import firebase_rtdb_backup
 import time
 from tkinter import *

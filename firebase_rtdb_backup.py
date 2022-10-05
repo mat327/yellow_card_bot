@@ -1,5 +1,4 @@
 import pyrebase
-from sympy import im
 import users_ban_stats
 import time
 from tkinter import *
