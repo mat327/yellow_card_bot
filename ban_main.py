@@ -9,6 +9,7 @@ import banned_users_txt
 import users_ban_stats
 #import firebase_backup
 import firebase_rtdb_backup
+import firebase_storage
 import time
 from tkinter import *
 
@@ -57,7 +58,8 @@ async def ban_function(payload, client1, banned_messages, ban_duration, min_reac
                     banned_users_txt.write_banned_user(roles_list, message.author.id, terminal) #dodatnie informacji o zbanowanym uzytkowniku do txt
                     users_ban_stats.update_stats(message.author.id, terminal, ban_duration) #zaktualizowanie statystyk banow
                     #firebase_backup.update_backup_firebase(payload.message_id, message.author.id, ban_duration, terminal) #aktualizacja backupu firebase
-                    firebase_rtdb_backup.update_backup_firebase(payload.message_id, message.author.id, ban_duration, terminal) #aktualizacja backupu firebase
+                    firebase_rtdb_backup.update_backup_firebase(message, message.author.id, ban_duration, terminal) #aktualizacja backupu firebase
+                    firebase_storage.update_backup_files(terminal) #aktualizacja pilkow backupu w chmurze
                     await asyncio.sleep(ban_duration)
 
                     await member.remove_roles(Muted) #usunięcie roli muted
