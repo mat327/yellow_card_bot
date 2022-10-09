@@ -22,6 +22,8 @@ import os
 import command_drink
 import command_dog_cat
 
+import music_player
+
 #zmienne wykorzystywane w kodzie
 banned_messages = []
 bot_config_dict = dict()
@@ -99,6 +101,14 @@ async def dog(ctx):
     await ctx.send(quote)
   else:
     await ctx.send("Command /dog is off :(") 
+
+@client1.hybrid_command()
+async def play(ctx, author, title):
+   await music_player.play_song(ctx, author, title, client1)
+
+@client1.hybrid_command()
+async def download_song(ctx, author, title, url):
+  await music_player.download_song(ctx, url, author, title)
 
 #Kod GUI
 main_gui = Tk()
