@@ -1,2 +1,11 @@
+.vs
+__pycache__
 
 firebase_key.json
+ban_func_config.json
+ban_stats.json
+bot_config.json
+
+auth key and others.txt
+banned_messages_list.txt
+banned_users.txt
