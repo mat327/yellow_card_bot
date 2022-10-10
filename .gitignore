@@ -1,6 +1,6 @@
 .vs
 __pycache__
-music
+songs
 
 firebase_key.json
 ban_func_config.json
@@ -10,3 +10,5 @@ bot_config.json
 auth_key_and_others.txt
 banned_messages_list.txt
 banned_users.txt
+
+add_command_script.py

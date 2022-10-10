@@ -103,12 +103,21 @@ async def dog(ctx):
     await ctx.send("Command /dog is off :(") 
 
 @client1.hybrid_command()
-async def play(ctx, author, title):
-   await music_player.play_song(ctx, author, title, client1)
+async def play(ctx, url):
+   await music_player.init_play(ctx, url, client1)
 
 @client1.hybrid_command()
-async def download_song(ctx, author, title, url):
-  await music_player.download_song(ctx, url, author, title)
+async def join(ctx):
+   await music_player.join_channel(ctx, client1)
+  
+@client1.hybrid_command()
+async def leave(ctx):
+   await music_player.leave_channel(ctx, client1)
+
+@client1.hybrid_command()
+async def next(ctx):
+   await music_player.next_song(ctx, client1)
+
 
 #Kod GUI
 main_gui = Tk()
