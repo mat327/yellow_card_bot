@@ -7,24 +7,19 @@ url = "https://discord.com/api/v10/applications/867485164400803890/commands"
 json = {
     "name": "play",
     "type": 1,
-    "description": "Play song on voice channel.",
+    "description": "Play Youtube song/s.",
     "options": [
-        {"name": "author",
-            "description": "Author of the song.",
+        {"name": "url",
+            "description": "Song/s URL.",
             "type": 3,
-            "required": True,
-        },
-        {"name": "title",
-            "description": "Song title.",
-            "type": 3,
-            "required": True,
+            "required": True
         }
     ]
 }
 
 # For authorization, you can use either your bot token
 headers = {
-    "Authorization": "Bot ODY3NDg1MTY0NDAwODAzODkw.GU_OGb.e9zmgivgPjIKMjptgXe6Ft48djRfMU19UHUM2o"
+    "Authorization": "Bot <key>"
 }
 
 # or a client credentials token for your app with the applications.commands.update scope
