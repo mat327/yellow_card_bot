@@ -1,3 +1,4 @@
+import asyncio
 from fileinput import filename
 from tokenize import String
 import discord
@@ -12,9 +13,12 @@ playlist = list()
 
 async def join_channel(ctx, client1):
     if (ctx.author.voice): # jesli osoba jest na kanale
-        channel = ctx.author.voice.channel #kanal gdzie jest osoba
-        await channel.connect() #wejdz na kanal
-        await ctx.send("Hello everyone")
+        if not ctx.voice_client:
+            channel = ctx.author.voice.channel #kanal gdzie jest osoba
+            await channel.connect() #wejdz na kanal
+            await ctx.send("Hello everyone")
+        else :
+            await ctx.send("I'm on a voice channel")
     else: #jesli osoby nie ma na kanale
         await ctx.send("You are not connected to a voice channel")
 
@@ -26,7 +30,7 @@ async def leave_channel(ctx, client1):
         await vc.disconnect()
         await ctx.send("See you next time")
     else: # jesli bot nie jest na kanale
-        await ctx.send("I'm not in a voice channel")
+        await ctx.send("I'm not on a voice channel")
 
 async def download_song(ctx):
     try :
@@ -39,6 +43,11 @@ async def download_song(ctx):
         filename = new_file
     except:
         await ctx.send("Download failed, try again.")
+
+def delete_files_in_dir():
+    dir = 'songs'
+    for f in os.listdir(dir):
+        os.remove(os.path.join(dir, f))
 
 async def init_play(ctx, url, client1):
     if ctx.author.voice: #czy uzytkownik jest na kanale glosowym
@@ -63,17 +72,64 @@ async def init_play(ctx, url, client1):
 
 async def play_song(ctx, vc):
     while playlist: #dopoki sa pozycje na liscie
-        await download_song(ctx) #pobiera piosenke           
-        try:
-            vc.play(discord.FFmpegPCMAudio(executable='C:/Users/Bialy/Dropbox/Komputer/Desktop/ffmpeg/bin/ffmpeg.exe', source=filename))
-            while vc.is_playing() or vc.is_paused():
-                time.sleep(1)
+        #if not vc.is_playing() and not vc.is_paused():
             delete_files_in_dir() #usuwa poprzedni plik
-            playlist.pop(0) #usuwa pozycje z listy
-        except:
-            await ctx.send("Cannot find song.")
+            await download_song(ctx) #pobiera piosenke   
+            playlist.pop(0) #usuwa pozycje z listy        
+            try:
+                vc.play(discord.FFmpegPCMAudio(executable='C:/Users/Bialy/Dropbox/Komputer/Desktop/ffmpeg/bin/ffmpeg.exe', source=filename))
+                while vc.is_playing() or vc.is_paused():
+                    await asyncio.sleep(1)
+            except:
+                await ctx.send("Cannot find song.")
 
-def delete_files_in_dir():
-    dir = 'songs'
-    for f in os.listdir(dir):
-        os.remove(os.path.join(dir, f))
+async def next_song(ctx, client1, amount):
+    if ctx.voice_client: # jesli bot jest na kanale
+        vc = get(client1.voice_clients, guild=ctx.guild)
+        if playlist :
+            for i in range(amount-1):
+                playlist.pop(0)
+            vc.stop()
+        else :
+            await ctx.send("No more songs in playlist")
+    else: # jesli bot nie jest na kanale
+        await ctx.send("I'm not in a voice channel")
+
+async def show_playlist(ctx, client1):
+    if playlist:
+        async with ctx.typing():
+            playlist_str = str(len(playlist)) + " songs in Playlist \n"
+            for i in range(10):
+                playlist_str = playlist_str + str(i+1) + ". "+ playlist[i].title + "\n"
+        await ctx.send(playlist_str)
+    else:
+        await ctx.send("Currently there are no songs in playlist.")
+
+async def pause(ctx, client1):
+    if ctx.voice_client: # jesli bot jest na kanale
+        vc = get(client1.voice_clients, guild=ctx.guild)
+        if vc.is_playing():
+            vc.pause()
+            await ctx.send("Song paused.")
+        else :
+            await ctx.send("No song is playing.")
+    else: # jesli bot nie jest na kanale
+        await ctx.send("I'm not in a voice channel")
+
+async def resume(ctx, client1):
+    if ctx.voice_client: # jesli bot jest na kanale
+        vc = get(client1.voice_clients, guild=ctx.guild)
+        if vc.is_paused():
+            vc.resume()
+            await ctx.send("Resumed.")
+        else :
+            await ctx.send("No song is paused.")
+    else: # jesli bot nie jest na kanale
+        await ctx.send("I'm not in a voice channel")
+
+async def clear_playlist(ctx, client1):
+ try:
+    playlist.clear()
+    await ctx.send("Playlist cleared.")
+ except:
+    await ctx.send("Cannot clear playlist, try again.")

@@ -104,19 +104,35 @@ async def dog(ctx):
 
 @client1.hybrid_command()
 async def play(ctx, url):
-   await music_player.init_play(ctx, url, client1)
+  await music_player.init_play(ctx, url, client1)
 
 @client1.hybrid_command()
 async def join(ctx):
-   await music_player.join_channel(ctx, client1)
+  await music_player.join_channel(ctx, client1)
   
 @client1.hybrid_command()
 async def leave(ctx):
-   await music_player.leave_channel(ctx, client1)
+  await music_player.leave_channel(ctx, client1)
 
 @client1.hybrid_command()
-async def next(ctx):
-   await music_player.next_song(ctx, client1)
+async def next(ctx, amount=1):
+  await music_player.next_song(ctx, client1, amount)
+
+@client1.hybrid_command()
+async def track(ctx):
+  await music_player.show_playlist(ctx, client1)
+
+@client1.hybrid_command()
+async def pause(ctx):
+  await music_player.pause(ctx, client1)
+
+@client1.hybrid_command()
+async def resume(ctx):
+  await music_player.resume(ctx, client1)
+
+@client1.hybrid_command()
+async def clear(ctx):
+  await music_player.clear_playlist(ctx, client1)
 
 
 #Kod GUI
