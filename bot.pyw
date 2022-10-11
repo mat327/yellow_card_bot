@@ -158,6 +158,13 @@ async def clear(ctx):
   else:
     await ctx.send("Music Player if off :(") 
 
+@client1.hybrid_command()
+async def mix_playlist(ctx):
+  if functionalities_config_dict["music_player"] == 1:
+    await music_player.change_order_in_playlist(ctx, client1)
+  else:
+    await ctx.send("Music Player if off :(") 
+
 
 #Kod GUI
 main_gui = Tk()

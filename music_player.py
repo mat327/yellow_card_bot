@@ -1,5 +1,6 @@
 import asyncio
 from fileinput import filename
+import random
 import discord
 from discord.utils import get
 from pytube import YouTube
@@ -134,3 +135,10 @@ async def clear_playlist(ctx, client1):
     await ctx.send("Playlist cleared.")
  except:
     await ctx.send("Cannot clear playlist, try again.")
+
+async def change_order_in_playlist(ctx, client1):
+ try:
+    random.shuffle(playlist)
+    await ctx.send("Playlist order changed.")
+ except:
+    await ctx.send("Cannot change playlist order, try again.")
