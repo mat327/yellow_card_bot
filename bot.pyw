@@ -29,7 +29,7 @@ banned_messages = []
 bot_config_dict = dict()
 ban_func_config_dict = dict()
 functionalities_config_dict = dict()
-functionalities_config_dict = {"ban_func": 1, "ban_cmd": 1, "drink_cmd": 1, "cat_cmd": 1, "dog_cmd": 1}
+functionalities_config_dict = {"ban_func": 1, "ban_cmd": 1, "drink_cmd": 1, "cat_cmd": 1, "dog_cmd": 1, "music_player": 1}
 
 #konfiguracja clienta discorda
 intents = discord.Intents.default()
@@ -104,35 +104,59 @@ async def dog(ctx):
 
 @client1.hybrid_command()
 async def play(ctx, url):
-  await music_player.init_play(ctx, url, client1)
+  if functionalities_config_dict["music_player"] == 1:
+    await music_player.init_play(ctx, url, client1)
+  else:
+    await ctx.send("Music Player if off :(") 
 
 @client1.hybrid_command()
 async def join(ctx):
-  await music_player.join_channel(ctx, client1)
+  if functionalities_config_dict["music_player"] == 1:
+    await music_player.join_channel(ctx, client1)
+  else:
+    await ctx.send("Music Player if off :(") 
   
 @client1.hybrid_command()
 async def leave(ctx):
-  await music_player.leave_channel(ctx, client1)
+  if functionalities_config_dict["music_player"] == 1:
+    await music_player.leave_channel(ctx, client1)
+  else:
+    await ctx.send("Music Player if off :(") 
 
 @client1.hybrid_command()
 async def next(ctx, amount=1):
-  await music_player.next_song(ctx, client1, amount)
+  if functionalities_config_dict["music_player"] == 1:
+    await music_player.next_song(ctx, client1, amount)
+  else:
+    await ctx.send("Music Player if off :(") 
 
 @client1.hybrid_command()
 async def track(ctx):
-  await music_player.show_playlist(ctx, client1)
+  if functionalities_config_dict["music_player"] == 1:
+    await music_player.show_playlist(ctx, client1)
+  else:
+    await ctx.send("Music Player if off :(") 
 
 @client1.hybrid_command()
 async def pause(ctx):
-  await music_player.pause(ctx, client1)
+  if functionalities_config_dict["music_player"] == 1:
+    await music_player.pause(ctx, client1)
+  else:
+    await ctx.send("Music Player if off :(") 
 
 @client1.hybrid_command()
 async def resume(ctx):
-  await music_player.resume(ctx, client1)
+  if functionalities_config_dict["music_player"] == 1:
+    await music_player.resume(ctx, client1)
+  else:
+    await ctx.send("Music Player if off :(") 
 
 @client1.hybrid_command()
 async def clear(ctx):
-  await music_player.clear_playlist(ctx, client1)
+  if functionalities_config_dict["music_player"] == 1:
+    await music_player.clear_playlist(ctx, client1)
+  else:
+    await ctx.send("Music Player if off :(") 
 
 
 #Kod GUI
@@ -188,7 +212,7 @@ def onclick_disconnect_button():
 scrollbar = Scrollbar(main_gui, orient="vertical")
 terminal = Listbox(main_gui, yscrollcommand=scrollbar.set, background="black", foreground="white")
 feet_author = Label(main_gui, text= " Author : Mateusz Białek     ")
-feet_version = Label(main_gui, text="     Version : 0.5 ")
+feet_version = Label(main_gui, text="     Version : 0.7 ")
 scrollbar.config(command=terminal.yview)
 connect_button = Button(main_gui, text="Connect", command=onclick_connect_button)
 bot_config_button = Button(main_gui, text="Bot Config", command=onclick_bot_config_button)

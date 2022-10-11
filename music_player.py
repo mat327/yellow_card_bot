@@ -1,13 +1,10 @@
 import asyncio
 from fileinput import filename
-from tokenize import String
 import discord
 from discord.utils import get
-from numpy import delete
 from pytube import YouTube
 from pytube import Playlist
 import os
-import time
 
 playlist = list()
 
@@ -77,7 +74,7 @@ async def play_song(ctx, vc):
             await download_song(ctx) #pobiera piosenke   
             playlist.pop(0) #usuwa pozycje z listy        
             try:
-                vc.play(discord.FFmpegPCMAudio(executable='C:/Users/Bialy/Dropbox/Komputer/Desktop/ffmpeg/bin/ffmpeg.exe', source=filename))
+                vc.play(discord.FFmpegPCMAudio(executable='C:/Users/Bialy/Dropbox/Komputer/Desktop/ffmpeg/bin/ffmpeg.exe', source=filename)) #for linux just ffmpeg
                 while vc.is_playing() or vc.is_paused():
                     await asyncio.sleep(1)
             except:
@@ -99,8 +96,12 @@ async def show_playlist(ctx, client1):
     if playlist:
         async with ctx.typing():
             playlist_str = str(len(playlist)) + " songs in Playlist \n"
-            for i in range(10):
-                playlist_str = playlist_str + str(i+1) + ". "+ playlist[i].title + "\n"
+            if len(playlist) > 10 :
+                for i in range(10):
+                    playlist_str = playlist_str + str(i+1) + ". "+ playlist[i].title + "\n"
+            else :
+                for i in range(len(playlist)):
+                    playlist_str = playlist_str + str(i+1) + ". "+ playlist[i].title + "\n"                
         await ctx.send(playlist_str)
     else:
         await ctx.send("Currently there are no songs in playlist.")
