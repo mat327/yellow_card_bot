@@ -13,7 +13,8 @@ firebaseConfig = {"apiKey": "AIzaSyCvpC0Dh1FRohG_8lhDCWp_qxaCUfcjJ7s",
                   "storageBucket": "elo-bot-backup.appspot.com",
                   "messagingSenderId": "241995792453",
                   "appId": "1:241995792453:web:cf0e8ec78317ce52d6a32c",
-                  "measurementId": "G-4S5L7ZWCRX"}
+                  "measurementId": "G-4S5L7ZWCRX",
+                  "serviceAccount": "firebase_key.json"}
 
 firebase = pyrebase.initialize_app(firebaseConfig)
 
@@ -67,7 +68,6 @@ def update_backup_firebase(msg, user_id, ban_duration, terminal):
 
     sec = time.localtime()  # get struct_time
     terminal.insert(END, time.strftime("%d/%m/%Y, %H:%M:%S", sec) + "   Firebase Backup updated.")
-
 
 def find_url_in_content(content): # szukanie url w tresci wiadomosci
     regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
