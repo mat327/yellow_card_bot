@@ -11,7 +11,7 @@ playlist = list()
 
 async def join_channel(ctx, client1):
     if (ctx.author.voice): # jesli osoba jest na kanale
-        if not ctx.voice_client:
+        if not (ctx.voice_client and ctx.voice_client.is_connected()):
             channel = ctx.author.voice.channel #kanal gdzie jest osoba
             await channel.connect() #wejdz na kanal
             await ctx.send("Hello everyone")
@@ -21,7 +21,7 @@ async def join_channel(ctx, client1):
         await ctx.send("You are not connected to a voice channel")
 
 async def leave_channel(ctx, client1):
-    if ctx.voice_client: # jesli bot jest na kanale
+    if not (ctx.voice_client and ctx.voice_client.is_connected()): # jesli bot jest na kanale
         vc = get(client1.voice_clients, guild=ctx.guild)
         if vc.is_paused() or vc.is_playing() : vc.stop()
         playlist.clear()
@@ -75,7 +75,8 @@ async def play_song(ctx, vc):
             await download_song(ctx) #pobiera piosenke   
             playlist.pop(0) #usuwa pozycje z listy        
             try:
-                vc.play(discord.FFmpegPCMAudio(executable='C:/Users/Bialy/Dropbox/Komputer/Desktop/ffmpeg/bin/ffmpeg.exe', source=filename)) #for linux just ffmpeg
+                music_src = discord.FFmpegPCMAudio(executable='ffmpeg', source=filename) #for linux just ffmpeg
+                vc.play(music_src)
                 while vc.is_playing() or vc.is_paused():
                     await asyncio.sleep(1)
             except:
@@ -84,12 +85,13 @@ async def play_song(ctx, vc):
 async def next_song(ctx, client1, amount):
     if ctx.voice_client: # jesli bot jest na kanale
         vc = get(client1.voice_clients, guild=ctx.guild)
-        if playlist :
+        if playlist and len(playlist) > amount:
             for i in range(amount-1):
                 playlist.pop(0)
             vc.stop()
+            await ctx.send("Song/s skipped")
         else :
-            await ctx.send("No more songs in playlist")
+            await ctx.send("Too many songs to skip")
     else: # jesli bot nie jest na kanale
         await ctx.send("I'm not in a voice channel")
 
