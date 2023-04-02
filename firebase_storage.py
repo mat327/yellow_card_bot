@@ -12,7 +12,8 @@ firebaseConfig = {"apiKey": "AIzaSyCvpC0Dh1FRohG_8lhDCWp_qxaCUfcjJ7s",
                   "storageBucket": "elo-bot-backup.appspot.com",
                   "messagingSenderId": "241995792453",
                   "appId": "1:241995792453:web:cf0e8ec78317ce52d6a32c",
-                  "measurementId": "G-4S5L7ZWCRX"}
+                  "measurementId": "G-4S5L7ZWCRX",
+                  "serviceAccount": "firebase_key.json"}
 
 firebase = pyrebase.initialize_app(firebaseConfig)
 
