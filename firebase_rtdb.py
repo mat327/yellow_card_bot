@@ -35,7 +35,7 @@ def update_backup_firebase(msg, user_id, ban_duration, terminal):
     # dodanie nowej wiadomosci do backupu
     data = {'msg_id': str(msg.id),
         'author_id' : str(msg.author.id),
-        'author_name' : str(msg.author.name),
+        'author_name' : str(msg.author.display_name),
         'time' : msg.created_at.strftime("%d/%m/%Y, %H:%M:%S")}
 
     if str(msg.content) : data['content']= str(msg.content)
