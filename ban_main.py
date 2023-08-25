@@ -22,13 +22,13 @@ async def ban_function(payload, client1, banned_messages, ban_duration, min_reac
             if func_on == 1:
                 if payload.message_id in banned_messages:
                     #await message.channel.send(message.author.name + " otrzymał już karę.")
-                    await message.reply(message.author.name + " otrzymał już karę.")
+                    await message.reply(message.author.display_name + " otrzymał już karę.")
                 else:
                     banned_messages.append(payload.message_id) #dodanie wiadomości do listy zbanowanych
                     if min_reaction_amount < 5:
-                        await message.channel.send(message.author.name + " otrzymał " + str(min_reaction_amount) + " żółte kartki.")
+                        await message.channel.send(message.author.display_name + " otrzymał " + str(min_reaction_amount) + " żółte kartki.")
                     else:
-                        await message.channel.send(message.author.name + " otrzymał " + str(min_reaction_amount) + " żółtych kartek.")
+                        await message.channel.send(message.author.display_name + " otrzymał " + str(min_reaction_amount) + " żółtych kartek.")
                     guild = message.guild
                     Muted = discord.utils.get(guild.roles, name="Muted")
                     if not Muted: #tworzenie roli muted
@@ -37,7 +37,7 @@ async def ban_function(payload, client1, banned_messages, ban_duration, min_reac
                             await channel.set_permissions(Muted, speak=True, send_messages=False, read_message_history=True, read_messages=True)
 
                     if banned_users_txt.check_is_user_banned(message.author.id, terminal): #sprawdzenie czy użytkownik jest już zbanowany
-                        await message.channel.send(message.author.name + " otrzyma karę po zakończeniu obecnej.")
+                        await message.channel.send(message.author.display_name + " otrzyma karę po zakończeniu obecnej.")
 
                     while banned_users_txt.check_is_user_banned(message.author.id, terminal): #sprawdzenie czy użytkownik jest już zbanowany
                         await asyncio.sleep(10)
@@ -50,9 +50,9 @@ async def ban_function(payload, client1, banned_messages, ban_duration, min_reac
                             await member.remove_roles(role1)
                     await member.add_roles(Muted) #nadanie roli muted
                     if ban_duration < 300:
-                        await message.channel.send(message.author.name + " został zmutowany na " + str(ban_duration)+ " sekund.")
+                        await message.channel.send(message.author.display_name + " został zmutowany na " + str(ban_duration)+ " sekund.")
                     else:
-                        await message.channel.send(message.author.name + " został zmutowany na " + str(ban_duration//60)+ " minut.")
+                        await message.channel.send(message.author.display_name + " został zmutowany na " + str(ban_duration//60)+ " minut.")
 
                     banned_messages_txt.write_banned_messages(payload.message_id, terminal) #dodanie wiadomości do pliku
                     banned_users_txt.write_banned_user(roles_list, message.author.id, terminal) #dodatnie informacji o zbanowanym uzytkowniku do txt
@@ -67,7 +67,7 @@ async def ban_function(payload, client1, banned_messages, ban_duration, min_reac
                         if role.name != "@everyone" and role.name != "Server Booster":
                             role1 = discord.utils.get(guild.roles, name=role.name)
                             await member.add_roles(role1)
-                    await message.channel.send(message.author.name + " został odmutowany.")
+                    await message.channel.send(message.author.display_name + " został odmutowany.")
                     try:
                         banned_users_txt.delete_banned_user(message.author.id, terminal) #usuniecie użytkownika z pliku zbanowanych uzytkownikow
                         sec = time.localtime() # get struct_time

@@ -85,7 +85,7 @@ async def play_song(ctx, vc):
 async def next_song(ctx, client1, amount):
     if ctx.voice_client: # jesli bot jest na kanale
         vc = get(client1.voice_clients, guild=ctx.guild)
-        if playlist and len(playlist) > amount:
+        if playlist and len(playlist) >= amount:
             for i in range(amount-1):
                 playlist.pop(0)
             vc.stop()
